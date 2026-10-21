@@ -1,29 +1,46 @@
 #ifndef MAINTENANCELOG_H
 #define MAINTENANCELOG_H
 
-#include <iostream>
-using namespace std;
+#include <cstddef>
+#include <string>
+#include <vector>
 
-struct LogNode
-{
-    int sensorID;
-    string message;
-
-    LogNode* next;
-    LogNode* previous;
+struct MaintenanceRecord {
+    std::string id;
+    std::string siteId;
+    std::string location;
+    std::string action;
+    std::string note;
+    std::string timestamp;
+    std::string by;
 };
 
-class MaintenanceLog
-{
+// Node of a doubly linked list.
+struct LogNode {
+    MaintenanceRecord record;
+    LogNode* previous = nullptr;
+    LogNode* next = nullptr;
+
+    explicit LogNode(const MaintenanceRecord& value) : record(value) {}
+};
+
+// Keeps maintenance activity in insertion order and returns it newest-first.
+class MaintenanceLog {
 private:
-    LogNode* head;
-    LogNode* tail;
+    LogNode* head = nullptr;
+    LogNode* tail = nullptr;
+    std::size_t count = 0;
 
 public:
-    MaintenanceLog();
+    MaintenanceLog() = default;
+    ~MaintenanceLog();
 
-    void addLog(int sensorID, string message);
-    void displayLogs();
+    MaintenanceLog(const MaintenanceLog&) = delete;
+    MaintenanceLog& operator=(const MaintenanceLog&) = delete;
+
+    void addRecord(const MaintenanceRecord& record);
+    std::vector<MaintenanceRecord> newestFirst() const;
+    std::size_t size() const;
 };
 
 #endif
