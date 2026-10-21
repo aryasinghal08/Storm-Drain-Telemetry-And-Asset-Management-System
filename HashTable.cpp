@@ -1,82 +1,74 @@
 #include "HashTable.h"
 
-int HashTable::hashFunction(int id)
-{
-    return id % 10;
+#include <functional>
+
+HashTable::HashTable(std::size_t capacity)
+    : table(capacity == 0 ? 101 : capacity) {
 }
 
-void HashTable::insertSensor(int id, float water, float soil)
-{
-    int index = hashFunction(id);
+std::size_t HashTable::hash(const std::string& key) const {
+    return std::hash<std::string>{}(key) % table.size();
+}
 
-    int start = index;
+// Insert a new site or replace its previous reading. Linear probing handles collisions.
+bool HashTable::insertOrUpdate(const SiteRecord& record) {
+    if (record.id.empty() || table.empty()) {
+        return false;
+    }
 
-    while (table[index].occupied)
-    {
-        index = (index + 1) % 10;
+    const std::size_t startIndex = hash(record.id);
 
-        if (index == start)
-        {
-            cout << "Hash table is full!\n";
-            return;
+    for (std::size_t step = 0; step < table.size(); ++step) {
+        const std::size_t index = (startIndex + step) % table.size();
+        SiteRecord& slot = table[index];
+
+        if (!slot.valid || slot.id == record.id) {
+            if (!slot.valid) {
+                ++count;
+            }
+            slot = record;
+            slot.valid = true;
+            return true;
         }
     }
 
-    table[index].id = id;
-    table[index].waterLevel = water;
-    table[index].soilMoisture = soil;
-    table[index].occupied = true;
-
-    cout << "Sensor data added successfully.\n";
+    return false; // Every slot is occupied by another key.
 }
 
-void HashTable::searchSensor(int id)
-{
-    int index = hashFunction(id);
-    int start = index;
-
-    while (table[index].occupied)
-    {
-        if (table[index].id == id)
-        {
-            cout << "\nSensor Found!\n";
-            cout << "Sensor ID: " << table[index].id << endl;
-            cout << "Water Level: " << table[index].waterLevel << endl;
-            cout << "Soil Moisture: " << table[index].soilMoisture << endl;
-
-            return;
-        }
-
-        index = (index + 1) % 10;
-
-        if (index == start)
-            break;
+const SiteRecord* HashTable::find(const std::string& id) const {
+    if (table.empty() || id.empty()) {
+        return nullptr;
     }
 
-    cout << "Sensor not found.\n";
-}
+    const std::size_t startIndex = hash(id);
+    for (std::size_t step = 0; step < table.size(); ++step) {
+        const std::size_t index = (startIndex + step) % table.size();
+        const SiteRecord& slot = table[index];
 
-void HashTable::displaySensors()
-{
-    cout << "\n===== SENSOR DATA =====\n";
-
-    bool found = false;
-
-    for (int i = 0; i < 10; i++)
-    {
-        if (table[i].occupied)
-        {
-            found = true;
-
-            cout << "Sensor ID: " << table[i].id
-                 << " | Water: " << table[i].waterLevel
-                 << " | Soil: " << table[i].soilMoisture
-                 << endl;
+        // An unused slot means the key was not inserted further along this probe sequence.
+        if (!slot.valid) {
+            return nullptr;
+        }
+        if (slot.id == id) {
+            return &slot;
         }
     }
 
-    if (!found)
-    {
-        cout << "No sensor data available.\n";
+    return nullptr;
+}
+
+std::vector<SiteRecord> HashTable::getAll() const {
+    std::vector<SiteRecord> records;
+    records.reserve(count);
+
+    for (const SiteRecord& record : table) {
+        if (record.valid) {
+            records.push_back(record);
+        }
     }
+    return records;
+}
+
+std::size_t HashTable::size() const {
+    return count;
 }
