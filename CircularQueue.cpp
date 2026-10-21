@@ -1,62 +1,109 @@
-#include "CircularQueue.h"
 
-CircularQueue::CircularQueue()
+#include "CircularQueue.h"
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+// Constructor
+CircularQueue::CircularQueue(size_t capacity)
 {
-    front = 0;
-    rear = -1;
+    if (capacity == 0)
+    {
+        capacity = 1;
+    }
+
+    data.resize(capacity);
+
+    frontIndex = 0;
+    rearIndex = 0;
     count = 0;
 }
 
-void CircularQueue::enqueue(int sensorID)
+// Insert an element into the circular queue
+bool CircularQueue::enqueue(const string& value)
 {
-    if (count == 5)
+    // Check whether the queue is full
+    if (count == data.size())
     {
-        cout << "Queue is full!\n";
-        return;
+        return false;
     }
 
-    rear = (rear + 1) % 5;
+    // Avoid inserting a duplicate value
+    if (contains(value))
+    {
+        return false;
+    }
 
-    queue[rear] = sensorID;
+    // Insert at the rear position
+    data[rearIndex] = value;
+
+    // Move rear circularly to the next position
+    rearIndex = (rearIndex + 1) % data.size();
 
     count++;
 
-    cout << "Sensor " << sensorID << " added to alert queue.\n";
+    return true;
 }
 
-void CircularQueue::dequeue()
+// Remove an element from the front
+bool CircularQueue::dequeue(string& value)
 {
+    // Check whether the queue is empty
     if (count == 0)
     {
-        cout << "Queue is empty!\n";
-        return;
+        return false;
     }
 
-    cout << "Processing sensor: " << queue[front] << endl;
+    // Store the front element
+    value = data[frontIndex];
 
-    front = (front + 1) % 5;
+    // Move front circularly to the next position
+    frontIndex = (frontIndex + 1) % data.size();
 
     count--;
+
+    return true;
 }
 
-void CircularQueue::display()
+// Check whether a value already exists in the queue
+bool CircularQueue::contains(const string& value) const
 {
-    if (count == 0)
+    for (size_t i = 0; i < count; i++)
     {
-        cout << "Alert queue is empty.\n";
-        return;
+        size_t index = (frontIndex + i) % data.size();
+
+        if (data[index] == value)
+        {
+            return true;
+        }
     }
 
-    cout << "\n===== ALERT QUEUE =====\n";
+    return false;
+}
 
-    int index = front;
+// Check whether the queue is empty
+bool CircularQueue::isEmpty() const
+{
+    return count == 0;
+}
 
-    for (int i = 0; i < count; i++)
+// Return the current number of elements
+size_t CircularQueue::size() const
+{
+    return count;
+}
+
+// Return all elements in queue order
+vector<string> CircularQueue::getAll() const
+{
+    vector<string> result;
+
+    for (size_t i = 0; i < count; i++)
     {
-        cout << queue[index] << " ";
+        size_t index = (frontIndex + i) % data.size();
 
-        index = (index + 1) % 5;
+        result.push_back(data[index]);
     }
 
-    cout << endl;
+    return result;
 }
