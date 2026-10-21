@@ -1,36 +1,41 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-#include <iostream>
-using namespace std;
+#include <cstddef>
+#include <string>
+#include <vector>
 
-struct Sensor
-{
-    int id;
-    float waterLevel;
-    float soilMoisture;
-    bool occupied;
-
-    Sensor()
-    {
-        id = -1;
-        waterLevel = 0;
-        soilMoisture = 0;
-        occupied = false;
-    }
+// Latest weather-informed record stored for one configured site.
+struct SiteRecord {
+    std::string id;
+    std::string location;
+    std::string observedAt;
+    std::string status;
+    double latitude = 0.0;
+    double longitude = 0.0;
+    double precipitation = 0.0;
+    double rain = 0.0;
+    double humidity = 0.0;
+    double wind = 0.0;
+    double risk = 0.0;
+    bool valid = false;
+    bool stale = true;
 };
 
-class HashTable
-{
+// Hash table with linear probing for location records.
+class HashTable {
 private:
-    Sensor table[10];
-
-    int hashFunction(int id);
+    std::vector<SiteRecord> table;
+    std::size_t count = 0;
+    std::size_t hash(const std::string& key) const;
 
 public:
-    void insertSensor(int id, float water, float soil);
-    void searchSensor(int id);
-    void displaySensors();
+    explicit HashTable(std::size_t capacity = 101);
+
+    bool insertOrUpdate(const SiteRecord& record);
+    const SiteRecord* find(const std::string& id) const;
+    std::vector<SiteRecord> getAll() const;
+    std::size_t size() const;
 };
 
 #endif
