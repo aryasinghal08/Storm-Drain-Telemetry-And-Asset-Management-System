@@ -1,23 +1,27 @@
 #ifndef CIRCULARQUEUE_H
 #define CIRCULARQUEUE_H
 
-#include <iostream>
-using namespace std;
+#include <cstddef>
+#include <string>
+#include <vector>
 
-class CircularQueue
-{
+// Fixed-capacity circular queue used to track alert IDs awaiting review.
+class CircularQueue {
 private:
-    int queue[5];
-    int front;
-    int rear;
-    int count;
+    std::vector<std::string> data;
+    std::size_t frontIndex = 0;
+    std::size_t rearIndex = 0;
+    std::size_t count = 0;
 
 public:
-    CircularQueue();
+    explicit CircularQueue(std::size_t capacity = 100);
 
-    void enqueue(int sensorID);
-    void dequeue();
-    void display();
+    bool enqueue(const std::string& value);
+    bool dequeue(std::string& value);
+    bool contains(const std::string& value) const;
+    bool isEmpty() const;
+    std::size_t size() const;
+    std::vector<std::string> getAll() const;
 };
 
 #endif
