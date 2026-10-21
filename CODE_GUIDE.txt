@@ -1,0 +1,23 @@
+CODE GUIDE — SEMESTER 3 WALKTHROUGH
+
+Start with these files in order:
+1. backend/main.cpp — entry point; calls runServer().
+2. backend/server.cpp and backend/server.h — local HTTP server, API routes, and request handling.
+3. backend/WeatherApiClient.cpp and backend/WeatherApiClient.h — makes weather requests; data is weather-based, not drain-sensor data.
+4. backend/Graph.h and Graph.cpp — adjacency-list graph and BFS.
+5. backend/HashTable.h and HashTable.cpp — hash function, linear probing, insert/update, and search.
+6. backend/CircularQueue.h and CircularQueue.cpp — front/rear/count, enqueue, dequeue, and wrap-around using modulo.
+7. backend/MaxHeap.h and MaxHeap.cpp — insert, siftUp, peek, removeHighest, and siftDown.
+8. backend/MaintenanceLog.h and MaintenanceLog.cpp — doubly linked list with head/tail and newest-first traversal.
+
+VIVA POINTS
+- Queue follows FIFO: First In, First Out.
+- Circular queue reuses array positions using (index + 1) % capacity.
+- BFS uses a queue and visits graph vertices level by level.
+- A hash collision occurs when different keys map to the same table index; linear probing checks the next slot.
+- A max-heap keeps the largest score at the root.
+- A doubly linked list node has previous and next pointers.
+- The risk score is a demonstration estimate based on weather API values. It is not measured water level and does not prove a drain is blocked.
+
+Build command used by RUN_WINDOWS.bat:
+g++ -std=c++17 -O2 -Wall -Wextra main.cpp server.cpp WeatherApiClient.cpp Graph.cpp HashTable.cpp CircularQueue.cpp MaxHeap.cpp MaintenanceLog.cpp -o storm_server.exe -lws2_32 -lwinhttp
