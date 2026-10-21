@@ -1,55 +1,42 @@
 #include "MaintenanceLog.h"
 
-MaintenanceLog::MaintenanceLog()
-{
-    head = NULL;
-    tail = NULL;
+MaintenanceLog::~MaintenanceLog() {
+    LogNode* current = head;
+    while (current != nullptr) {
+        LogNode* nextNode = current->next;
+        delete current;
+        current = nextNode;
+    }
 }
 
-void MaintenanceLog::addLog(int sensorID, string message)
-{
-    LogNode* newNode = new LogNode;
+// Add a new node at the tail of the doubly linked list.
+void MaintenanceLog::addRecord(const MaintenanceRecord& record) {
+    LogNode* newNode = new LogNode(record);
 
-    newNode->sensorID = sensorID;
-    newNode->message = message;
-
-    newNode->next = NULL;
-    newNode->previous = NULL;
-
-    if (head == NULL)
-    {
+    if (tail == nullptr) {
+        // The list is empty: the new node is both head and tail.
         head = newNode;
         tail = newNode;
-    }
-    else
-    {
-        tail->next = newNode;
+    } else {
         newNode->previous = tail;
-
+        tail->next = newNode;
         tail = newNode;
     }
 
-    cout << "Maintenance log added successfully.\n";
+    ++count;
 }
 
-void MaintenanceLog::displayLogs()
-{
-    if (head == NULL)
-    {
-        cout << "No maintenance logs available.\n";
-        return;
+// Walk backward from tail so the most recent activity appears first.
+std::vector<MaintenanceRecord> MaintenanceLog::newestFirst() const {
+    std::vector<MaintenanceRecord> records;
+    records.reserve(count);
+
+    for (LogNode* current = tail; current != nullptr; current = current->previous) {
+        records.push_back(current->record);
     }
+    return records;
+}
 
-    cout << "\n===== MAINTENANCE LOGS =====\n";
-
-    LogNode* current = head;
-
-    while (current != NULL)
-    {
-        cout << "Sensor ID: " << current->sensorID << endl;
-        cout << "Message: " << current->message << endl;
-        cout << "--------------------------\n";
-
-        current = current->next;
-    }
+std::size_t MaintenanceLog::size() const {
+    return count;
 }
