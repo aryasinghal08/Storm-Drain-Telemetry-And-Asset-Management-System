@@ -1,5 +1,4 @@
 #include "HashTable.h"
-
 #include <functional>
 
 HashTable::HashTable(std::size_t capacity)
