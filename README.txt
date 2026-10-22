@@ -30,7 +30,7 @@ WHAT IS INCLUDED
 - CSV file for maintenance records.
 - Comments and readable formatting intended for a Semester 3 code walkthrough.
 
-IMPORTANT PROJECT LIMITATION
+PROJECT LIMITATION
 This is a software-only prototype. It fetches weather observations from Open-Meteo; it does not read physical drain sensors, measure actual drain water depth, detect a blockage, or provide a certified flood forecast. The risk score is a demonstration heuristic and must not be used for emergency decisions. The example sites and graph connections are illustrative.
 
 HOW THE DATA STRUCTURES ARE USED
