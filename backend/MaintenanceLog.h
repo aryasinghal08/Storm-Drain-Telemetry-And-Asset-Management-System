@@ -15,7 +15,7 @@ struct MaintenanceRecord {
     std::string by;
 };
 
-// Node of a doubly linked list.
+
 struct LogNode {
     MaintenanceRecord record;
     LogNode* previous = nullptr;
