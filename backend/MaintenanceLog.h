@@ -24,7 +24,7 @@ struct LogNode {
     explicit LogNode(const MaintenanceRecord& value) : record(value) {}
 };
 
-// Keeps maintenance activity in insertion order and returns it newest-first.
+
 class MaintenanceLog {
 private:
     LogNode* head = nullptr;
