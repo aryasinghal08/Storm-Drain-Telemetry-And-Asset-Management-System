@@ -24,7 +24,7 @@ struct LogNode {
     explicit LogNode(const MaintenanceRecord& value) : record(value) {}
 };
 
-
+//new
 class MaintenanceLog {
 private:
     LogNode* head = nullptr;
