@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-// Fixed-capacity circular queue used to track alert IDs awaiting review.
+
 class CircularQueue {
 private:
     std::vector<std::string> data;
