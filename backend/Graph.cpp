@@ -17,7 +17,7 @@ bool Graph::setLocation(int index, const std::string& name) {
     return true;
 }
 
-// Add a one-way connection between two drainage zones.
+// To add a one-way connection between two drainage zones.
 bool Graph::addEdge(int from, int to) {
     if (from < 0 || to < 0 || from >= getVertexCount() ||
         to >= getVertexCount() || from == to) {
