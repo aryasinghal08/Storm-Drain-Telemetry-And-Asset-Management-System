@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-// Directed graph of illustrative drainage-zone connections.
 class Graph {
 private:
     std::vector<std::string> names;
